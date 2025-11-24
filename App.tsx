@@ -9,6 +9,11 @@ import { Segment, TranscriptItem, ChatMessage, AnalysisStatus, Project } from '.
 import * as GeminiService from './services/geminiService';
 import { extractAudioAsBase64 } from './services/audioUtils';
 
+const hasConfiguredApiKey = () => {
+  const env = import.meta.env as Record<string, string | undefined>;
+  return Boolean(env.VITE_GEMINI_API_KEY || env.GEMINI_API_KEY);
+};
+
 const MOCK_PROJECTS: Project[] = [
   { id: '1', name: 'Untitled Project', date: 'Just now', duration: '00:00' },
   { id: '2', name: 'Tokyo Vlog_Final', date: '2d ago', duration: '12:45' },
@@ -59,7 +64,7 @@ const App: React.FC = () => {
   const activeProject = projects.find(p => p.id === activeProjectId) || projects[0];
 
   useEffect(() => {
-    if (!process.env.API_KEY) {
+    if (!hasConfiguredApiKey()) {
       setApiKeyError(true);
     }
     audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();

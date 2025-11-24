@@ -1,9 +1,10 @@
 import { GoogleGenAI, Type, Modality } from "@google/genai";
 import { Segment, TranscriptItem, AIEditResponse } from "../types";
 
-const apiKey = process.env.API_KEY;
+const env = import.meta.env as Record<string, string | undefined>;
+const apiKey = env.VITE_GEMINI_API_KEY || env.GEMINI_API_KEY || "";
 
-const ai = new GoogleGenAI({ apiKey: apiKey || '' });
+const ai = new GoogleGenAI({ apiKey });
 
 // Models
 const TEXT_MODEL = "gemini-2.5-flash";
