@@ -1,0 +1,7 @@
+{
+  "name": "ChatCut AI Editor",
+  "description": "An AI-powered video editor that allows users to edit video timelines via natural language chat using Google Gemini.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
