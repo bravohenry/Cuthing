@@ -2,7 +2,7 @@
   <img src="assets/logo.png" alt="ChatCut Logo" width="200" style="margin: 2rem 0;" />
 </div>
 
-<h1 align="center">Cuthing · ChatCut AI Workstation</h1>
+<h1 align="center">Cuthing · Video AI Workstation</h1>
 <p align="center">
   A Nothing OS–inspired AI video editor that blends visual, audio, and conversational intelligence powered by Google Gemini.
 </p>
