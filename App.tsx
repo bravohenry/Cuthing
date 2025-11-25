@@ -1,6 +1,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
+import SettingsPanel from './components/SettingsPanel';
+import OnboardingModal from './components/OnboardingModal';
 import ChatPanel from './components/ChatPanel';
 import Timeline from './components/Timeline';
 import TranscriptView from './components/TranscriptView';
@@ -28,6 +30,7 @@ const App: React.FC = () => {
   const [activeProjectId, setActiveProjectId] = useState<string>('');
   const [showPreferences, setShowPreferences] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [customApiKey, setCustomApiKey] = useState('');
 
   // Theme State
@@ -67,33 +70,34 @@ const App: React.FC = () => {
 
   // Load initial data
   useEffect(() => {
-    const loadedProjects = ProjectService.loadProjects();
-    const loadedKey = ProjectService.loadApiKey();
+    const init = async () => {
+      const hasOnboarded = localStorage.getItem('hasOnboarded');
+      if (!hasOnboarded) {
+        setShowOnboarding(true);
+      }
 
-    if (loadedKey) {
-      setCustomApiKey(loadedKey);
-      GeminiService.updateApiKey(loadedKey);
-    }
+      const loadedKey = ProjectService.loadApiKey();
+      if (loadedKey) {
+        setCustomApiKey(loadedKey);
+        GeminiService.updateApiKey(loadedKey);
+        setApiKeyError(false);
+      } else {
+        setApiKeyError(true);
+      }
 
-    if (loadedProjects.length > 0) {
-      setProjects(loadedProjects);
-      setActiveProjectId(loadedProjects[0].id);
-      // Load the first project's data
-      loadProjectData(loadedProjects[0]);
-    } else {
-      // Create default project
-      const newProject = ProjectService.createNewProject();
-      setProjects([newProject]);
-      setActiveProjectId(newProject.id);
-      ProjectService.saveProjects([newProject]);
-    }
+      const loadedProjects = await ProjectService.loadProjects();
+      if (loadedProjects.length > 0) {
+        setProjects(loadedProjects);
+        setActiveProjectId(loadedProjects[0].id);
+        loadProjectData(loadedProjects[0]);
+      } else {
+        const newProject = await ProjectService.createNewProject();
+        setProjects([newProject]);
+        setActiveProjectId(newProject.id);
+      }
+    };
 
-    if (!hasConfiguredApiKey() && !loadedKey) {
-      setApiKeyError(true);
-    } else {
-      setApiKeyError(false);
-    }
-
+    init();
     audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
 
     // Check system preference
@@ -504,6 +508,11 @@ const App: React.FC = () => {
     }
   };
 
+  const handleUpdateSegment = (updatedSegment: Segment) => {
+    const newSegments = segments.map(s => s.id === updatedSegment.id ? updatedSegment : s);
+    setSegments(newSegments);
+  };
+
   const handleSendMessage = async (text: string) => {
     if (!videoSrc) return;
     if (analysisStatus !== 'ready') return;
@@ -769,6 +778,7 @@ const App: React.FC = () => {
               currentTime={currentTime}
               segments={segments}
               onSeek={handleSeek}
+              onUpdateSegment={handleUpdateSegment}
             />
           </div>
         </div>
@@ -781,6 +791,16 @@ const App: React.FC = () => {
         onToggleTTS={setTtsEnabled}
         ttsEnabled={ttsEnabled}
       />
+
+      {showOnboarding && (
+        <OnboardingModal
+          onClose={() => {
+            localStorage.setItem('hasOnboarded', 'true');
+            setShowOnboarding(false);
+          }}
+          onGoToSettings={() => setShowPreferences(true)}
+        />
+      )}
 
       {/* Preferences Modal */}
       {showPreferences && (
