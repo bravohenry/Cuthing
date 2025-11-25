@@ -160,6 +160,15 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages, onSendMessage, isProces
 
       {/* Input Area */}
       <div className="p-4 pt-2 bg-nothing-card border-t border-nothing-border">
+        <div className="flex items-center gap-2 mb-2">
+            <button
+                className="w-full text-center bg-nothing-input hover:bg-nothing-black/5 border border-nothing-border rounded-full text-nothing-black text-[10px] uppercase font-bold tracking-wider py-2.5 flex items-center justify-center gap-2 transition-colors"
+                onClick={() => onSendMessage('Remove all silences and filler words like "um" or "uh".')}
+            >
+                <Sparkles size={12} />
+                Magic Edit
+            </button>
+        </div>
         <div className="flex items-center gap-2">
             <button
                 type="button"

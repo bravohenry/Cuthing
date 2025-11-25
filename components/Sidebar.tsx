@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Plus, Settings, Disc, Trash2, File, User, ChevronRight, Film, FileJson } from 'lucide-react';
+import { Plus, Settings, Disc, Trash2, File, User, MessageSquare, Film, FileJson } from 'lucide-react';
 import { Project, Asset } from '../types';
 
 interface SidebarProps {
@@ -205,6 +205,22 @@ const Sidebar: React.FC<SidebarProps> = ({
             <div className="text-xs font-bold text-nothing-black uppercase tracking-wide">User.01</div>
           </div>
         </button>
+
+        <a
+          href="https://github.com/your-repo/issues/new?assignees=&labels=feedback&template=feedback.md&title=%5BFeedback%5D%3A+"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`h-10 w-full flex items-center rounded-lg hover:bg-nothing-black/5 transition-colors group ${isCollapsed ? 'justify-center' : 'px-2'}`}
+          title="Feedback"
+        >
+          <div className={`flex items-center justify-center shrink-0 text-nothing-black ${isCollapsed ? '' : 'mr-3'}`}>
+            <MessageSquare size={18} strokeWidth={1.5} />
+          </div>
+          <span className={`text-xs font-bold text-nothing-black whitespace-nowrap transition-all duration-500 overflow-hidden uppercase tracking-wide text-left ${isCollapsed ? 'w-0 opacity-0 hidden' : 'w-auto opacity-100'
+            }`}>
+            Feedback
+          </span>
+        </a>
       </div>
     </div>
   );
