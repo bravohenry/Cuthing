@@ -2,9 +2,16 @@ import { GoogleGenAI, Type, Modality } from "@google/genai";
 import { Segment, TranscriptItem, AIEditResponse } from "../types";
 
 const env = import.meta.env as Record<string, string | undefined>;
-const apiKey = env.VITE_GEMINI_API_KEY || env.GEMINI_API_KEY || "";
+let apiKey = env.VITE_GEMINI_API_KEY || env.GEMINI_API_KEY || "";
 
-const ai = new GoogleGenAI({ apiKey });
+let ai = new GoogleGenAI({ apiKey });
+
+export const updateApiKey = (key: string) => {
+  apiKey = key;
+  ai = new GoogleGenAI({ apiKey });
+};
+
+export const getApiKey = () => apiKey;
 
 // Models
 const TEXT_MODEL = "gemini-2.5-flash";
@@ -27,7 +34,7 @@ export const analyzeVisualContent = async (base64Frames: string[]): Promise<stri
 
   // Prepare parts: text prompt + image parts
   const parts: any[] = [{ text: prompt }];
-  
+
   base64Frames.forEach(frame => {
     parts.push({
       inlineData: {
@@ -190,7 +197,7 @@ export const processVideoEdit = async (
   if (!apiKey) throw new Error("API Key not set");
 
   // We provide the full context to the model
-  const simplifiedTranscript = transcript.map(t => 
+  const simplifiedTranscript = transcript.map(t =>
     `{${t.start.toFixed(2)}-${t.end.toFixed(2)}} [${t.category}]: ${t.text}`
   ).join("\n");
 
@@ -262,11 +269,11 @@ export const processVideoEdit = async (
     });
 
     const result = JSON.parse(response.text || "{}") as AIEditResponse;
-    
+
     if (result.editedSegments) {
-        result.editedSegments.sort((a, b) => a.start - b.start);
+      result.editedSegments.sort((a, b) => a.start - b.start);
     }
-    
+
     return result;
 
   } catch (error) {

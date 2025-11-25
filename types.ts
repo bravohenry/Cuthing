@@ -24,12 +24,29 @@ export interface ChatMessage {
   isThinking?: boolean;
 }
 
+export interface Asset {
+  id: string;
+  name: string;
+  type: 'video' | 'image';
+  url?: string; // Blob URL (session only)
+  path?: string; // For future use
+}
+
 export interface Project {
   id: string;
   name: string;
   date: string;
-  duration?: string;
+  duration: string;
+  // Persisted State
+  transcript?: TranscriptItem[];
+  segments?: Segment[];
+  messages?: ChatMessage[];
+  visualDescription?: string;
+  lastModified?: number;
   isActive?: boolean;
+  // Sub-items
+  assets?: Asset[];
+  sequenceName?: string;
 }
 
 // AI Response structure expected from Gemini
