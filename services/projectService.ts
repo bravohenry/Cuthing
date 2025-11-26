@@ -12,6 +12,10 @@ export const loadApiKey = (): string => {
   return localStorage.getItem(API_KEY_STORAGE_key) || '';
 };
 
+export const saveProjects = async (projects: Project[]) => {
+  return await db.projects.bulkPut(projects);
+};
+
 export const createNewProject = async (name: string = 'Untitled Project'): Promise<Project> => {
   const newProject: Project = {
     id: Date.now().toString(),
