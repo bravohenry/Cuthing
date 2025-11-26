@@ -216,11 +216,12 @@ const App: React.FC = () => {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const handleNewProject = () => {
+  const handleNewProject = async () => {
     // Current project is auto-saved by the useEffect
-    resetEditor();
-    const newProject = ProjectService.createNewProject();
+    const newProject = await ProjectService.createNewProject();
     newProject.sequenceName = 'Main Sequence'; // Default sequence
+
+    resetEditor();
     const updatedProjects = [newProject, ...projects];
     setProjects(updatedProjects);
     setActiveProjectId(newProject.id);
